@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>IPMA Competence Invaders</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700;800;900&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Main Menu -->
+        <div id="screen-menu" class="screen active">
+            <div class="menu-content">
+                <div class="logo-container">
+                    <svg class="ipma-logo" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="0" y="10" width="60" height="60" fill="#E30613" rx="4"/>
+                        <text x="30" y="52" text-anchor="middle" fill="white" font-family="'Exo 2', sans-serif" font-weight="900" font-size="28">IP</text>
+                        <text x="68" y="52" fill="white" font-family="'Exo 2', sans-serif" font-weight="900" font-size="28">MA</text>
+                    </svg>
+                    <h1 class="game-title">COMPETENCE<br>INVADERS</h1>
+                </div>
+                <div class="menu-buttons">
+                    <button class="btn btn-primary" id="btn-play" data-i18n="play">PLAY</button>
+                    <button class="btn btn-secondary" id="btn-top10" data-i18n="top10">TOP 10</button>
+                </div>
+                <div class="lang-switcher">
+                    <button class="lang-btn active" data-lang="en">EN</button>
+                    <span class="lang-divider">|</span>
+                    <button class="lang-btn" data-lang="cz">CZ</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Character Selection -->
+        <div id="screen-character" class="screen">
+            <div class="screen-content">
+                <h2 data-i18n="selectCharacter">SELECT YOUR PM</h2>
+                <div class="character-selection">
+                    <div class="character-option" data-gender="male">
+                        <div class="character-preview male-pm">
+                            <svg viewBox="0 0 80 120" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="40" cy="25" r="18" fill="#FFD5A0"/>
+                                <rect x="32" y="8" width="16" height="6" rx="2" fill="#4A3728"/>
+                                <rect x="28" y="12" width="24" height="4" fill="#4A3728"/>
+                                <circle cx="34" cy="24" r="2" fill="#333"/>
+                                <circle cx="46" cy="24" r="2" fill="#333"/>
+                                <path d="M36 32 Q40 36 44 32" stroke="#333" fill="none" stroke-width="1.5"/>
+                                <rect x="25" y="43" width="30" height="40" rx="4" fill="#2C3E50"/>
+                                <rect x="30" y="43" width="20" height="15" fill="white"/>
+                                <line x1="40" y1="43" x2="40" y2="58" stroke="#E30613" stroke-width="3"/>
+                                <rect x="15" y="45" width="10" height="30" rx="3" fill="#2C3E50"/>
+                                <rect x="55" y="45" width="10" height="30" rx="3" fill="#2C3E50"/>
+                                <rect x="28" y="83" width="11" height="30" rx="3" fill="#2C3E50"/>
+                                <rect x="41" y="83" width="11" height="30" rx="3" fill="#2C3E50"/>
+                                <rect x="26" y="110" width="13" height="6" rx="2" fill="#333"/>
+                                <rect x="41" y="110" width="13" height="6" rx="2" fill="#333"/>
+                            </svg>
+                        </div>
+                        <span data-i18n="male">Male PM</span>
+                    </div>
+                    <div class="character-option" data-gender="female">
+                        <div class="character-preview female-pm">
+                            <svg viewBox="0 0 80 120" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="40" cy="25" r="18" fill="#FFD5A0"/>
+                                <path d="M22 20 Q22 5 40 5 Q58 5 58 20 L56 30 Q50 18 40 18 Q30 18 24 30 Z" fill="#4A3728"/>
+                                <path d="M22 20 L20 35 Q22 30 24 30 Z" fill="#4A3728"/>
+                                <path d="M58 20 L60 35 Q58 30 56 30 Z" fill="#4A3728"/>
+                                <circle cx="34" cy="24" r="2" fill="#333"/>
+                                <circle cx="46" cy="24" r="2" fill="#333"/>
+                                <path d="M36 32 Q40 36 44 32" stroke="#333" fill="none" stroke-width="1.5"/>
+                                <rect x="25" y="43" width="30" height="40" rx="4" fill="#E30613"/>
+                                <rect x="30" y="43" width="20" height="10" fill="white"/>
+                                <rect x="15" y="45" width="10" height="28" rx="3" fill="#E30613"/>
+                                <rect x="55" y="45" width="10" height="28" rx="3" fill="#E30613"/>
+                                <path d="M25 83 L28 113 L39 113 L40 83 Z" fill="#2C3E50"/>
+                                <path d="M40 83 L41 113 L52 113 L55 83 Z" fill="#2C3E50"/>
+                                <rect x="26" y="110" width="14" height="5" rx="2" fill="#E30613"/>
+                                <rect x="41" y="110" width="14" height="5" rx="2" fill="#E30613"/>
+                            </svg>
+                        </div>
+                        <span data-i18n="female">Female PM</span>
+                    </div>
+                </div>
+                <button class="btn btn-back" id="btn-back-char" data-i18n="back">BACK</button>
+            </div>
+        </div>
+
+        <!-- Tutorial -->
+        <div id="screen-tutorial" class="screen">
+            <div class="screen-content tutorial-content">
+                <h2 data-i18n="tutorial">HOW TO PLAY</h2>
+                <div class="tutorial-steps">
+                    <div class="tutorial-step">
+                        <div class="tutorial-icon">🎯</div>
+                        <p data-i18n="tutorialShoot">Shoot the TARGET competences marked with a crosshair</p>
+                    </div>
+                    <div class="tutorial-step">
+                        <div class="tutorial-icon">✅</div>
+                        <p data-i18n="tutorialPass">Let SAFE competences pass through - earn bonus points!</p>
+                    </div>
+                    <div class="tutorial-step">
+                        <div class="tutorial-icon">❌</div>
+                        <p data-i18n="tutorialWrong">Shooting wrong competences costs -50 points</p>
+                    </div>
+                    <div class="tutorial-step">
+                        <div class="tutorial-icon">❄️</div>
+                        <p data-i18n="tutorialFreeze">Competences shoot back! Getting hit freezes you for 3 seconds and costs a life</p>
+                    </div>
+                    <div class="tutorial-step">
+                        <div class="tutorial-icon">❤️</div>
+                        <p data-i18n="tutorialLives">You have 3 lives - lose one if hit or if a target passes through</p>
+                    </div>
+                    <div class="tutorial-step">
+                        <div class="tutorial-icon">🔫</div>
+                        <p data-i18n="tutorialAmmo">You have 5 shots per magazine - wait for a full reload when empty</p>
+                    </div>
+                </div>
+                <button class="btn btn-primary" id="btn-start-game" data-i18n="startGame">START GAME</button>
+            </div>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="screen-game" class="screen">
+            <div id="game-hud">
+                <div class="hud-left">
+                    <div class="hud-lives" id="hud-lives">
+                        <span class="heart">❤️</span>
+                        <span class="heart">❤️</span>
+                        <span class="heart">❤️</span>
+                    </div>
+                </div>
+                <div class="hud-center">
+                    <span class="hud-round" id="hud-round">R1</span>
+                </div>
+                <div class="hud-right">
+                    <span class="hud-ammo" id="hud-ammo">●●●●●</span>
+                    <span class="hud-score" id="hud-score">0</span>
+                </div>
+            </div>
+            <div id="game-targets-bar">
+                <span class="targets-label" data-i18n="targets">TARGETS:</span>
+                <span id="targets-list"></span>
+            </div>
+            <canvas id="game-canvas"></canvas>
+            <div id="freeze-overlay" class="hidden">
+                <span data-i18n="frozen">FROZEN!</span>
+                <span id="freeze-timer">3</span>
+            </div>
+            <div id="game-controls">
+                <button class="control-btn" id="btn-left">◀</button>
+                <button class="control-btn control-shoot" id="btn-shoot">🔴</button>
+                <button class="control-btn" id="btn-right">▶</button>
+            </div>
+        </div>
+
+        <!-- Round End / Stats -->
+        <div id="screen-stats" class="screen">
+            <div class="screen-content stats-content">
+                <h2 id="stats-title" data-i18n="roundComplete">ROUND COMPLETE!</h2>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-label" data-i18n="totalPoints">Total Points</span>
+                        <span class="stat-value" id="stat-points">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label" data-i18n="accuracy">Accuracy</span>
+                        <span class="stat-value" id="stat-accuracy">0%</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label" data-i18n="targetsHit">Targets Hit</span>
+                        <span class="stat-value" id="stat-targets">0/0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label" data-i18n="correctPasses">Correct Passes</span>
+                        <span class="stat-value" id="stat-passes">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label" data-i18n="missedShots">Missed Shots</span>
+                        <span class="stat-value" id="stat-missed">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label" data-i18n="livesRemaining">Lives Remaining</span>
+                        <span class="stat-value" id="stat-lives">0</span>
+                    </div>
+                </div>
+                <div class="bonuses-section" id="bonuses-section">
+                    <h3 data-i18n="bonuses">BONUSES</h3>
+                    <div id="bonuses-list"></div>
+                </div>
+                <div class="stats-buttons">
+                    <button class="btn btn-primary" id="btn-next-round" data-i18n="nextRound">NEXT ROUND</button>
+                    <button class="btn btn-secondary" id="btn-share" data-i18n="share">SHARE</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Over -->
+        <div id="screen-gameover" class="screen">
+            <div class="screen-content">
+                <h2 data-i18n="gameOver">GAME OVER</h2>
+                <div class="final-score">
+                    <span data-i18n="finalScore">Final Score</span>
+                    <span class="big-score" id="final-score-value">0</span>
+                </div>
+                <div class="nickname-input">
+                    <label data-i18n="enterNickname">Enter your nickname:</label>
+                    <input type="text" id="nickname-input" maxlength="12" placeholder="PM_HERO">
+                </div>
+                <div class="gameover-buttons">
+                    <button class="btn btn-primary" id="btn-save-score" data-i18n="saveScore">SAVE SCORE</button>
+                    <button class="btn btn-secondary" id="btn-play-again" data-i18n="playAgain">PLAY AGAIN</button>
+                    <button class="btn btn-back" id="btn-menu" data-i18n="mainMenu">MAIN MENU</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- TOP 10 Leaderboard -->
+        <div id="screen-leaderboard" class="screen">
+            <div class="screen-content">
+                <h2 data-i18n="leaderboard">TOP 10</h2>
+                <div class="leaderboard-table" id="leaderboard-table">
+                    <div class="lb-header">
+                        <span>#</span>
+                        <span data-i18n="name">Name</span>
+                        <span data-i18n="score">Score</span>
+                        <span data-i18n="round">Round</span>
+                    </div>
+                    <div id="lb-entries"></div>
+                </div>
+                <div class="lb-empty hidden" id="lb-empty">
+                    <p data-i18n="noScores">No scores yet. Be the first!</p>
+                </div>
+                <button class="btn btn-back" id="btn-back-lb" data-i18n="back">BACK</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="i18n.js"></script>
+    <script src="competences.js"></script>
+    <script src="game.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

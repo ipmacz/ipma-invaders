@@ -607,7 +607,10 @@ class Game {
         this.stop();
 
         // Calculate stats
-        const totalTargets = this.roundConfig.targets.length;
+        // totalTargets = only targets that were actually shown in this round
+        const totalTargets = this.roundConfig.targets.filter(
+            id => this.roundConfig.competences.includes(id)
+        ).length;
         const accuracy = this.shotsFired > 0 ? Math.round((this.shotsHit / this.shotsFired) * 100) : 0;
         const missedShots = this.shotsFired - this.shotsHit;
 
@@ -625,8 +628,9 @@ class Game {
             this.score += 100;
         }
 
-        if (accuracy > 80) {
-            const accuracyBonusPoints = Math.floor((accuracy - 80) / 5) * 25;
+        // Accuracy bonus: +25 per every 5% above 70%
+        if (accuracy > 70) {
+            const accuracyBonusPoints = Math.floor((accuracy - 70) / 5) * 25;
             if (accuracyBonusPoints > 0) {
                 bonuses.push({ key: 'bonusAccuracy', points: accuracyBonusPoints });
                 this.score += accuracyBonusPoints;

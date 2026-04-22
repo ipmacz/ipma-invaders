@@ -6,7 +6,6 @@
     let game = null;
     let selectedGender = null;
     let currentRound = 0;
-    let tutorialShown = localStorage.getItem('ipma_tutorial_shown') === 'true';
 
     // ========== SCREENS ==========
     const screens = {
@@ -80,11 +79,7 @@
 
                 // Auto-advance after brief delay
                 setTimeout(() => {
-                    if (!tutorialShown) {
-                        showScreen('tutorial');
-                    } else {
-                        startNewGame();
-                    }
+                    showScreen('tutorial');
                 }, 300);
             });
         });
@@ -97,8 +92,6 @@
     // ========== TUTORIAL ==========
     function bindTutorialEvents() {
         document.getElementById('btn-start-game').addEventListener('click', () => {
-            tutorialShown = true;
-            localStorage.setItem('ipma_tutorial_shown', 'true');
             startNewGame();
         });
     }

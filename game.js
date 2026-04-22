@@ -120,6 +120,9 @@ class Game {
         this.width = w;
         this.height = h;
 
+        // On desktop (>768px) constrain grid movement to centre 70% of screen (15% margin each side)
+        this.gridMargin = w > 768 ? Math.round(w * 0.15) : 0;
+
         // Regenerate stars for new dimensions
         this._stars = null;
 
@@ -213,9 +216,10 @@ class Game {
             qi++;
         }
 
-        // Auto-pack into rows based on canvas width
+        // Auto-pack into rows within the play zone (respects gridMargin on desktop)
+        const playZoneWidth = this.width - 2 * this.gridMargin;
         const rows = [];
-        const maxRowWidth = this.width - padding * 2;
+        const maxRowWidth = playZoneWidth - padding * 2;
         let currentRow = [];
         let currentRowWidth = 0;
 
@@ -232,19 +236,19 @@ class Game {
         }
         if (currentRow.length > 0) rows.push(currentRow);
 
-        // Position each competence in the grid
+        // Position each competence centered within the play zone
         let yOffset = padding;
-        const rowHeight = 40; // consistent row height
+        const rowHeight = 40;
 
         for (const row of rows) {
-            // Calculate total row width to center it
             let totalWidth = 0;
             for (let i = 0; i < row.length; i++) {
                 totalWidth += row[i].width;
                 if (i < row.length - 1) totalWidth += padding;
             }
 
-            let xOffset = (this.width - totalWidth) / 2; // center row
+            // Center within play zone (gridMargin … width - gridMargin)
+            let xOffset = this.gridMargin + (playZoneWidth - totalWidth) / 2;
 
             for (const item of row) {
                 const isTarget = this.roundConfig.targets.includes(item.id);
@@ -383,14 +387,16 @@ class Game {
             c.y = c.gridOffsetY + this.gridOriginY;
         }
 
-        // Check if any competence hit left or right wall
+        // Check if any competence hit the play zone boundary
+        const wallLeft = this.gridMargin;
+        const wallRight = this.width - this.gridMargin;
         let hitWall = false;
         for (const c of this.activeCompetences) {
-            if (c.x <= 0 && this.gridDirection === -1) {
+            if (c.x <= wallLeft && this.gridDirection === -1) {
                 hitWall = true;
                 break;
             }
-            if (c.x + c.width >= this.width && this.gridDirection === 1) {
+            if (c.x + c.width >= wallRight && this.gridDirection === 1) {
                 hitWall = true;
                 break;
             }

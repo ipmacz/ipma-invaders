@@ -28,7 +28,7 @@ const AREA_CONFIG = {
 };
 
 const COMPETENCES = [
-    // PERSPECTIVE (10)
+    // Row 1: PERSPECTIVE (10)
     { id: 'strategy', area: COMPETENCE_AREAS.PERSPECTIVE, en: 'Strategy', cz: 'Strategie' },
     { id: 'governance', area: COMPETENCE_AREAS.PERSPECTIVE, en: 'Governance, structures and processes', cz: 'Governance, struktury a procesy' },
     { id: 'compliance', area: COMPETENCE_AREAS.PERSPECTIVE, en: 'Compliance, standards and regulations', cz: 'Compliance, standardy a regulace' },
@@ -40,7 +40,18 @@ const COMPETENCES = [
     { id: 'time', area: COMPETENCE_AREAS.PERSPECTIVE, en: 'Time', cz: 'Čas' },
     { id: 'organisation', area: COMPETENCE_AREAS.PERSPECTIVE, en: 'Organisation and information', cz: 'Organizace a informace' },
 
-    // PEOPLE (10)
+    // Row 2: PRACTICE (9) — middle row for symmetric 10-9-10 layout
+    { id: 'integrity', area: COMPETENCE_AREAS.PRACTICE, en: 'Personal integrity and reliability', cz: 'Osobní integrita a spolehlivost' },
+    { id: 'communication', area: COMPETENCE_AREAS.PRACTICE, en: 'Personal communication', cz: 'Osobní komunikace' },
+    { id: 'relations', area: COMPETENCE_AREAS.PRACTICE, en: 'Relations and engagement', cz: 'Vztahy a angažovanost' },
+    { id: 'leadership', area: COMPETENCE_AREAS.PRACTICE, en: 'Leadership', cz: 'Vedení' },
+    { id: 'teamwork', area: COMPETENCE_AREAS.PRACTICE, en: 'Teamwork', cz: 'Týmová práce' },
+    { id: 'conflict', area: COMPETENCE_AREAS.PRACTICE, en: 'Conflict and crisis', cz: 'Konflikt a krize' },
+    { id: 'resourcefulness', area: COMPETENCE_AREAS.PRACTICE, en: 'Resourcefulness', cz: 'Důvtip' },
+    { id: 'negotiation', area: COMPETENCE_AREAS.PRACTICE, en: 'Negotiation', cz: 'Vyjednávání' },
+    { id: 'results', area: COMPETENCE_AREAS.PRACTICE, en: 'Results orientation', cz: 'Orientace na výsledky' },
+
+    // Row 3: PEOPLE (10)
     { id: 'quality', area: COMPETENCE_AREAS.PEOPLE, en: 'Quality', cz: 'Kvalita' },
     { id: 'finance', area: COMPETENCE_AREAS.PEOPLE, en: 'Finance', cz: 'Finance' },
     { id: 'resources', area: COMPETENCE_AREAS.PEOPLE, en: 'Resources', cz: 'Zdroje' },
@@ -51,17 +62,6 @@ const COMPETENCES = [
     { id: 'change', area: COMPETENCE_AREAS.PEOPLE, en: 'Change and transformation', cz: 'Změna a transformace' },
     { id: 'selectbalance', area: COMPETENCE_AREAS.PEOPLE, en: 'Select and balance', cz: 'Výběr a vyvážení' },
     { id: 'selfreflection', area: COMPETENCE_AREAS.PEOPLE, en: 'Self-reflection and self-management', cz: 'Sebereflexe a sebeřízení' },
-
-    // PRACTICE (9)
-    { id: 'integrity', area: COMPETENCE_AREAS.PRACTICE, en: 'Personal integrity and reliability', cz: 'Osobní integrita a spolehlivost' },
-    { id: 'communication', area: COMPETENCE_AREAS.PRACTICE, en: 'Personal communication', cz: 'Osobní komunikace' },
-    { id: 'relations', area: COMPETENCE_AREAS.PRACTICE, en: 'Relations and engagement', cz: 'Vztahy a angažovanost' },
-    { id: 'leadership', area: COMPETENCE_AREAS.PRACTICE, en: 'Leadership', cz: 'Vedení' },
-    { id: 'teamwork', area: COMPETENCE_AREAS.PRACTICE, en: 'Teamwork', cz: 'Týmová práce' },
-    { id: 'conflict', area: COMPETENCE_AREAS.PRACTICE, en: 'Conflict and crisis', cz: 'Konflikt a krize' },
-    { id: 'resourcefulness', area: COMPETENCE_AREAS.PRACTICE, en: 'Resourcefulness', cz: 'Důvtip' },
-    { id: 'negotiation', area: COMPETENCE_AREAS.PRACTICE, en: 'Negotiation', cz: 'Vyjednávání' },
-    { id: 'results', area: COMPETENCE_AREAS.PRACTICE, en: 'Results orientation', cz: 'Orientace na výsledky' },
 ];
 
 // Get competence display name by current language
@@ -71,76 +71,91 @@ function getCompetenceName(competence) {
 
 // ========== ROUND DEFINITIONS ==========
 // Each round defines which competences appear and which are targets (must be shot)
+// Difficulty levers: speed, enemyFireRate (ms between enemy shots), target/distractor ratio
+//
+// Rounds 1-3:  All 29 competences, ALL are targets (learn to shoot everything)
+// Rounds 4-10: Selective targets + distractors (must distinguish targets from safe ones)
+
+const ALL_IDS = COMPETENCES.map(c => c.id);
+const PERSPECTIVE_IDS = COMPETENCES.filter(c => c.area === COMPETENCE_AREAS.PERSPECTIVE).map(c => c.id);
+const PRACTICE_IDS = COMPETENCES.filter(c => c.area === COMPETENCE_AREAS.PRACTICE).map(c => c.id);
+const PEOPLE_IDS = COMPETENCES.filter(c => c.area === COMPETENCE_AREAS.PEOPLE).map(c => c.id);
+
 const ROUNDS = [
-    // Round 1: All 29 competences — all are targets, slow intro
+    // === PHASE 1: LEARN THE COMPETENCES (all targets) ===
+
+    // Round 1: Gentle intro — all 29, slow, enemies barely shoot
     {
-        competences: COMPETENCES.map(c => c.id),
-        targets: COMPETENCES.map(c => c.id),
-        speed: 0.4,
-        spawnInterval: 3000,
+        competences: ALL_IDS,
+        targets: ALL_IDS,
+        speed: 0.35,
+        enemyFireRate: 3500,
     },
-    // Round 2: All 29 competences — all targets, slightly faster
+    // Round 2: A bit faster, enemies wake up
     {
-        competences: COMPETENCES.map(c => c.id),
-        targets: COMPETENCES.map(c => c.id),
+        competences: ALL_IDS,
+        targets: ALL_IDS,
         speed: 0.5,
-        spawnInterval: 2800,
+        enemyFireRate: 2800,
     },
-    // Round 3: All 29 competences — all targets, faster
+    // Round 3: Full speed intro — learn to dodge
     {
-        competences: COMPETENCES.map(c => c.id),
-        targets: COMPETENCES.map(c => c.id),
+        competences: ALL_IDS,
+        targets: ALL_IDS,
+        speed: 0.65,
+        enemyFireRate: 2200,
+    },
+
+    // === PHASE 2: SELECTIVE TARGETING (shoot targets, avoid distractors) ===
+
+    // Round 4: People only — 6 targets among 10 (easy selection)
+    {
+        competences: PEOPLE_IDS,
+        targets: ['quality', 'finance', 'resources', 'procurement', 'plancontrol', 'risk'],
         speed: 0.6,
-        spawnInterval: 2500,
+        enemyFireRate: 2400,
     },
-    // Round 4: Mix People + Practice (selective targets begin)
+    // Round 5: Practice only — 5 targets among 9
     {
-        competences: ['conflict', 'resourcefulness', 'negotiation', 'results', 'resources', 'procurement', 'stakeholders', 'relations'],
-        targets: ['conflict', 'resourcefulness', 'negotiation', 'results', 'relations'],
+        competences: PRACTICE_IDS,
+        targets: ['integrity', 'communication', 'leadership', 'teamwork', 'conflict'],
         speed: 0.7,
-        spawnInterval: 2300,
+        enemyFireRate: 2000,
     },
-    // Round 5: Introduce Perspective
+    // Round 6: Mix People + Practice — 7 targets among 15 distractors
     {
-        competences: ['strategy', 'governance', 'compliance', 'power', 'leadership', 'teamwork', 'quality'],
-        targets: ['strategy', 'governance', 'compliance'],
+        competences: [...PRACTICE_IDS, ...PEOPLE_IDS.slice(0, 6)],
+        targets: ['relations', 'negotiation', 'results', 'resourcefulness', 'quality', 'stakeholders', 'change'],
         speed: 0.75,
-        spawnInterval: 2200,
+        enemyFireRate: 1800,
     },
-    // Round 6: All areas mixed
+    // Round 7: Introduce Perspective — hard targets (3 hits each) among easier distractors
     {
-        competences: ['culture', 'design', 'requirements', 'scope', 'integrity', 'communication', 'risk', 'change', 'finance'],
-        targets: ['culture', 'design', 'requirements', 'scope', 'integrity', 'communication'],
-        speed: 0.8,
-        spawnInterval: 2000,
+        competences: [...PERSPECTIVE_IDS.slice(0, 5), ...PEOPLE_IDS.slice(0, 5), ...PRACTICE_IDS.slice(0, 4)],
+        targets: ['strategy', 'governance', 'compliance', 'power', 'culture', 'conflict', 'risk'],
+        speed: 0.85,
+        enemyFireRate: 1600,
     },
-    // Round 7: Harder
+    // Round 8: Full mix — all 3 areas, 10 targets among 20
     {
-        competences: ['time', 'organisation', 'strategy', 'governance', 'conflict', 'negotiation', 'plancontrol', 'selfreflection', 'results', 'relations'],
-        targets: ['time', 'organisation', 'conflict', 'negotiation', 'plancontrol', 'results'],
-        speed: 0.9,
-        spawnInterval: 1800,
+        competences: [...PERSPECTIVE_IDS, ...PRACTICE_IDS.slice(0, 5), ...PEOPLE_IDS.slice(0, 5)],
+        targets: ['design', 'requirements', 'scope', 'time', 'organisation', 'leadership', 'teamwork', 'finance', 'resources', 'selfreflection'],
+        speed: 0.95,
+        enemyFireRate: 1400,
     },
-    // Round 8: Full assault
+    // Round 9: Expert — all 29 on screen, only 12 are targets, fast enemies
     {
-        competences: ['strategy', 'compliance', 'power', 'culture', 'design', 'requirements', 'scope', 'time', 'organisation', 'leadership', 'resourcefulness', 'quality', 'stakeholders'],
-        targets: ['strategy', 'compliance', 'power', 'culture', 'design', 'requirements', 'scope', 'time', 'organisation'],
-        speed: 1.0,
-        spawnInterval: 1600,
-    },
-    // Round 9: Expert level
-    {
-        competences: COMPETENCES.map(c => c.id).slice(0, 20),
-        targets: COMPETENCES.map(c => c.id).slice(0, 15),
+        competences: ALL_IDS,
+        targets: ['strategy', 'compliance', 'culture', 'time', 'integrity', 'conflict', 'negotiation', 'results', 'quality', 'plancontrol', 'change', 'selectbalance'],
         speed: 1.1,
-        spawnInterval: 1400,
+        enemyFireRate: 1100,
     },
-    // Round 10: Final boss - all 29
+    // Round 10: Final boss — all 29, only Perspective (10) are targets, max speed + fire rate
     {
-        competences: COMPETENCES.map(c => c.id),
-        targets: COMPETENCES.filter(c => c.area === COMPETENCE_AREAS.PERSPECTIVE).map(c => c.id),
-        speed: 1.2,
-        spawnInterval: 1200,
+        competences: ALL_IDS,
+        targets: PERSPECTIVE_IDS,
+        speed: 1.3,
+        enemyFireRate: 800,
     },
 ];
 
@@ -152,16 +167,16 @@ function getRoundConfig(roundIndex) {
     if (roundIndex < ROUNDS.length) {
         return ROUNDS[roundIndex];
     }
-    // Generate endless rounds beyond defined ones
-    const allIds = COMPETENCES.map(c => c.id);
-    const numCompetences = Math.min(29, 10 + roundIndex * 2);
-    const shuffled = [...allIds].sort(() => Math.random() - 0.5).slice(0, numCompetences);
-    const numTargets = Math.min(shuffled.length, Math.floor(numCompetences * 0.6));
+    // Generate endless rounds beyond the defined 10
+    const numCompetences = 29; // always all
+    const shuffled = [...ALL_IDS].sort(() => Math.random() - 0.5);
+    const numTargets = Math.max(5, Math.floor(numCompetences * 0.4));
     const targets = shuffled.slice(0, numTargets);
+    const extra = roundIndex - ROUNDS.length;
     return {
         competences: shuffled,
         targets,
-        speed: 1.2 + (roundIndex - ROUNDS.length) * 0.1,
-        spawnInterval: Math.max(800, 1200 - (roundIndex - ROUNDS.length) * 50),
+        speed: 1.3 + extra * 0.1,
+        enemyFireRate: Math.max(500, 800 - extra * 50),
     };
 }

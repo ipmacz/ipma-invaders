@@ -110,11 +110,12 @@ class Game {
         const w = parent.clientWidth;
         const h = parent.clientHeight - hudH - targetsH - controlsH;
 
-        this.canvas.width = w * window.devicePixelRatio;
-        this.canvas.height = h * window.devicePixelRatio;
+        const dpr = Math.min(window.devicePixelRatio, 2); // cap at 2x to limit GPU memory on 3x iPhones
+        this.canvas.width = w * dpr;
+        this.canvas.height = h * dpr;
         this.canvas.style.width = w + 'px';
         this.canvas.style.height = h + 'px';
-        this.ctx.setTransform(window.devicePixelRatio, 0, 0, window.devicePixelRatio, 0, 0);
+        this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
         this.width = w;
         this.height = h;
@@ -196,25 +197,32 @@ class Game {
             items.push({ id, comp, config, width, height });
         }
 
-        // Layout in rows: pack items left to right, wrapping when exceeding canvas width
-        const maxRowWidth = this.width - padding * 2;
+        // Layout rows: use symmetric 10-9-10 pattern when 29 items, otherwise auto-pack
         const rows = [];
-        let currentRow = [];
-        let currentRowWidth = 0;
+        if (items.length === 29) {
+            rows.push(items.slice(0, 10));
+            rows.push(items.slice(10, 19));
+            rows.push(items.slice(19, 29));
+        } else {
+            // Auto-pack for other counts
+            const maxRowWidth = this.width - padding * 2;
+            let currentRow = [];
+            let currentRowWidth = 0;
 
-        for (const item of items) {
-            const neededWidth = currentRow.length > 0 ? item.width + padding : item.width;
-            if (currentRowWidth + neededWidth > maxRowWidth && currentRow.length > 0) {
-                rows.push(currentRow);
-                currentRow = [item];
-                currentRowWidth = item.width;
-            } else {
-                currentRow.push(item);
-                currentRowWidth += neededWidth;
+            for (const item of items) {
+                const neededWidth = currentRow.length > 0 ? item.width + padding : item.width;
+                if (currentRowWidth + neededWidth > maxRowWidth && currentRow.length > 0) {
+                    rows.push(currentRow);
+                    currentRow = [item];
+                    currentRowWidth = item.width;
+                } else {
+                    currentRow.push(item);
+                    currentRowWidth += neededWidth;
+                }
             }
-        }
-        if (currentRow.length > 0) {
-            rows.push(currentRow);
+            if (currentRow.length > 0) {
+                rows.push(currentRow);
+            }
         }
 
         // Position each competence in the grid
@@ -424,9 +432,8 @@ class Game {
     enemyShoot() {
         if (this.activeCompetences.length === 0) return;
 
-        // Enemy shoot interval: decreases with round difficulty
-        const baseInterval = 2000;
-        const interval = Math.max(600, baseInterval - this.round * 120);
+        // Enemy shoot interval from round config, fallback to calculated value
+        const interval = this.roundConfig.enemyFireRate || Math.max(600, 2000 - this.round * 120);
 
         this.enemyShootTimer += this.deltaTime * 1000;
         if (this.enemyShootTimer >= interval) {
@@ -783,18 +790,19 @@ class Game {
 
     renderBullets() {
         const ctx = this.ctx;
-        ctx.fillStyle = '#E30613';
 
         for (const b of this.bullets) {
+            // Soft glow (no shadowBlur — too expensive on iOS)
+            ctx.fillStyle = 'rgba(227, 6, 19, 0.3)';
+            ctx.beginPath();
+            ctx.roundRect(b.x - 2, b.y - 1, b.width + 4, b.height + 2, 3);
+            ctx.fill();
+
+            // Bullet core
+            ctx.fillStyle = '#E30613';
             ctx.beginPath();
             ctx.roundRect(b.x, b.y, b.width, b.height, 2);
             ctx.fill();
-
-            // Glow
-            ctx.shadowColor = '#E30613';
-            ctx.shadowBlur = 6;
-            ctx.fill();
-            ctx.shadowBlur = 0;
         }
     }
 
@@ -802,16 +810,21 @@ class Game {
         const ctx = this.ctx;
 
         for (const b of this.enemyBullets) {
-            ctx.fillStyle = b.color || '#FF9800';
+            const color = b.color || '#FF9800';
+
+            // Soft glow (no shadowBlur — too expensive on iOS)
+            ctx.globalAlpha = 0.3;
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.roundRect(b.x - 2, b.y - 1, b.width + 4, b.height + 2, 3);
+            ctx.fill();
+
+            // Bullet core
+            ctx.globalAlpha = 1;
+            ctx.fillStyle = color;
             ctx.beginPath();
             ctx.roundRect(b.x, b.y, b.width, b.height, 2);
             ctx.fill();
-
-            // Glow
-            ctx.shadowColor = b.color || '#FF9800';
-            ctx.shadowBlur = 5;
-            ctx.fill();
-            ctx.shadowBlur = 0;
         }
     }
 

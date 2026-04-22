@@ -40,10 +40,14 @@
         bindGameOverEvents();
         bindLeaderboardEvents();
 
+        let resizeTimeout;
         window.addEventListener('resize', () => {
-            if (game && game.running) {
-                game.resize();
-            }
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                if (game && game.running) {
+                    game.resize();
+                }
+            }, 150);
         });
     }
 
@@ -141,14 +145,16 @@
 
         showScreen('game');
 
-        // Need to wait for screen to be visible to get correct dimensions
+        // Wait for screen visibility + font load before building grid
         requestAnimationFrame(() => {
             game.resize();
             updateRoundDisplay();
             updateLivesDisplay(3);
             document.getElementById('hud-score').textContent = '0';
             updateAmmoDisplay(5, 5, false);
-            game.startRound(currentRound);
+            (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(() => {
+                game.startRound(currentRound);
+            });
         });
     }
 

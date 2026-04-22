@@ -197,33 +197,40 @@ class Game {
             items.push({ id, comp, config, width, height });
         }
 
-        // Layout rows: use symmetric 10-9-10 pattern when 29 items, otherwise auto-pack
-        const rows = [];
-        if (items.length === 29) {
-            rows.push(items.slice(0, 10));
-            rows.push(items.slice(10, 19));
-            rows.push(items.slice(19, 29));
-        } else {
-            // Auto-pack for other counts
-            const maxRowWidth = this.width - padding * 2;
-            let currentRow = [];
-            let currentRowWidth = 0;
+        // Interleave items by area so rows mix PERSPECTIVE / PRACTICE / PEOPLE
+        const byArea = {};
+        for (const item of items) {
+            const a = item.comp.area;
+            if (!byArea[a]) byArea[a] = [];
+            byArea[a].push(item);
+        }
+        const areaQueues = Object.values(byArea);
+        const interleaved = [];
+        let qi = 0;
+        while (interleaved.length < items.length) {
+            const q = areaQueues[qi % areaQueues.length];
+            if (q.length > 0) interleaved.push(q.shift());
+            qi++;
+        }
 
-            for (const item of items) {
-                const neededWidth = currentRow.length > 0 ? item.width + padding : item.width;
-                if (currentRowWidth + neededWidth > maxRowWidth && currentRow.length > 0) {
-                    rows.push(currentRow);
-                    currentRow = [item];
-                    currentRowWidth = item.width;
-                } else {
-                    currentRow.push(item);
-                    currentRowWidth += neededWidth;
-                }
-            }
-            if (currentRow.length > 0) {
+        // Auto-pack into rows based on canvas width
+        const rows = [];
+        const maxRowWidth = this.width - padding * 2;
+        let currentRow = [];
+        let currentRowWidth = 0;
+
+        for (const item of interleaved) {
+            const neededWidth = currentRow.length > 0 ? item.width + padding : item.width;
+            if (currentRowWidth + neededWidth > maxRowWidth && currentRow.length > 0) {
                 rows.push(currentRow);
+                currentRow = [item];
+                currentRowWidth = item.width;
+            } else {
+                currentRow.push(item);
+                currentRowWidth += neededWidth;
             }
         }
+        if (currentRow.length > 0) rows.push(currentRow);
 
         // Position each competence in the grid
         let yOffset = padding;
